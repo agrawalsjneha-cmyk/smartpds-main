@@ -13,6 +13,7 @@ import AuditorDashboard from "./pages/AuditorDashboard";
 import BeneficiaryDashboard from "./pages/BeneficiaryDashboard";
 import Grievance from "./pages/Grievance";
 import NotFound from "./pages/NotFound";
+import BeneficiaryList from "./pages/BeneficiaryList";
 
 const queryClient = new QueryClient();
 
@@ -33,6 +34,7 @@ const App = () => (
           <Route path="/beneficiary" element={<BeneficiaryDashboard />} />
           <Route path="/grievance" element={<Grievance />} />
           <Route path="*" element={<NotFound />} />
+          <Route path="/beneficiaries" element={<BeneficiaryList />} />
         </Routes>
       </BrowserRouter>
     </TooltipProvider>

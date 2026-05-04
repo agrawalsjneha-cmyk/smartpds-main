@@ -57,6 +57,9 @@ const About = () => (
     <section className="container py-16">
       <motion.div initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true }} className="text-center mb-10">
         <h2 className="font-display text-2xl font-black text-foreground">Conventional PDS vs SMART PDS</h2>
+        <p className="text-muted-foreground mt-3 max-w-x1 mx-auto leading-relaxed">
+          SMART PDS is a proposed blockchain enabled framework aimed at improving the transparency, efficiency and accountability  of the Indian Public Distribution System. In this model, the movement of the food grains, from district warehouses to beneficiaries , is digitally recorded and verified on a blockchain network, ensuring secure and tamper proof transaction records. Each grain packet is assigned a dynamic QR code linked to its blockchain transaction, enabling end-to-end traceability throughout the supply chain. The platform also includes digital monitoring dashboard that allows administrators to track grain allocation, stock levels, dispatch status, and delievry confirmations in real time.
+        </p>
         <motion.img
           src={comparisonCities}
           alt="Comparison: Conventional vs SMART PDS"
