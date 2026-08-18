@@ -14,8 +14,8 @@ export default {
     },
     extend: {
       fontFamily: {
-        display: ["Nunito", "system-ui", "sans-serif"],
-        sans: ["Poppins", "system-ui", "sans-serif"],
+        display: ["'Times New Roman'", "Times", "serif"],
+        sans: ["'Times New Roman'", "Times", "serif"],
       },
       colors: {
         border: "hsl(var(--border))",

@@ -12,26 +12,28 @@ const BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001';
 const API_KEY  = import.meta.env.VITE_API_KEY  || 'pds-secret-key-2024';
 
 const ALL_DCS = [
-  "DC-RAN-01","DC-RAN-02","DC-RAN-03","DC-RAN-04","DC-RAN-05",
-  "DC-RAN-06","DC-RAN-07","DC-RAN-08","DC-RAN-09","DC-RAN-10",
-  "DC-RAN-11","DC-RAN-12","DC-RAN-13","DC-RAN-14","DC-RAN-15",
-  "DC-RAN-16","DC-RAN-17","DC-RAN-18"
+  "KHE-A","KHE-B","CHA-A","CHA-B","MAN-A","MAN-B","BUR-A","BUR-B",
+  "LAP-A","LAP-B","BER-A","BER-B","ITK-A","ITK-B",
+  "KAN-A","KAN-B","KAN-C","KAN-D","KAN-E","KAN-F",
+  "RAT-A","RAT-B","NAG-A","NAG-B","NMK-A","NMK-B","ANG-A","ANG-B",
+  "ORM-A","ORM-B","RAH-A","RAH-B","SIL-A","SIL-B","SON-A","SON-B",
+  "BUN-A","BUN-B","TAM-A","TAM-B",
 ];
 
 const PSC_ZONES = [
-  { id: "PSC-RAN-01", name: "Khelari P&SC", zone: "North-West", dcs: ["DC-RAN-01","DC-RAN-02","DC-RAN-03","DC-RAN-04"] },
+  { id: "PSC-RAN-01", name: "Chanho P&SC", zone: "North-West", dcs: ["DC-RAN-01","DC-RAN-02","DC-RAN-03","DC-RAN-04"] },
   { id: "PSC-RAN-02", name: "Bero P&SC",    zone: "South-West", dcs: ["DC-RAN-05","DC-RAN-06","DC-RAN-07"] },
   { id: "PSC-RAN-03", name: "Kanke P&SC",   zone: "Central",    dcs: ["DC-RAN-08","DC-RAN-09","DC-RAN-10"] },
-  { id: "PSC-RAN-04", name: "Namkum P&SC",  zone: "East-Central",dcs: ["DC-RAN-11","DC-RAN-12","DC-RAN-13","DC-RAN-14"] },
-  { id: "PSC-RAN-05", name: "Silli P&SC",   zone: "Far East",   dcs: ["DC-RAN-15","DC-RAN-16","DC-RAN-17","DC-RAN-18"] },
+  { id: "PSC-RAN-04", name: "Angara P&SC",  zone: "East-Central",dcs: ["DC-RAN-11","DC-RAN-12","DC-RAN-13","DC-RAN-14"] },
+  { id: "PSC-RAN-05", name: "Sonahatu P&SC",   zone: "Far East",   dcs: ["DC-RAN-15","DC-RAN-16","DC-RAN-17","DC-RAN-18"] },
 ];
 
 const PSC_NAMES: Record<string, string> = {
-  "PSC-RAN-01": "Khelari P&SC",
+  "PSC-RAN-01": "Chanho P&SC",
   "PSC-RAN-02": "Bero P&SC",
   "PSC-RAN-03": "Kanke P&SC",
-  "PSC-RAN-04": "Namkum P&SC",
-  "PSC-RAN-05": "Silli P&SC",
+  "PSC-RAN-04": "Angara P&SC",
+  "PSC-RAN-05": "Sonahatu P&SC",
 };
 
 const DC_NAMES: Record<string, string> = {
@@ -95,7 +97,7 @@ const AuditorDashboard = () => {
     for (const dc of ALL_DCS) {
       try {
         const data = await apiFetch(`/api/beneficiaries?dcId=${dc}`);
-        const list = Array.isArray(data) ? data : [data];
+        const list = Array.isArray(data) ? data : (data ? [data] : []);
         all.push(...list);
       } catch { }
     }
@@ -129,13 +131,10 @@ const AuditorDashboard = () => {
   const totalRice  = allBeneficiaries.reduce((s,b) => s + (b.riceQty  || 0), 0);
   const totalWheat = allBeneficiaries.reduce((s,b) => s + (b.wheatQty || 0), 0);
 
-  // Carbon
-  const paperSaved     = total * 12 * 3;
-  const co2Paper       = (paperSaved * 0.005).toFixed(1);
-  const tripsSaved     = total * 2;
-  const co2Trips       = (tripsSaved * 2.3).toFixed(1);
-  const totalCO2       = (parseFloat(co2Paper) + parseFloat(co2Trips)).toFixed(1);
-  const trees          = Math.round(parseFloat(totalCO2) / 21.7);
+  /// Carbon — real Chapter 6 figures (IPCC-compliant methodology, static district-scale projection)
+  const carbonReductionPct = 90.62;
+  const smartMonthlyT = 33.75;
+  const conventionalMonthlyT = 359.84;
 
   const tabs = [
     { key: "ledger",       label: "📋 Ledger Audit" },
@@ -200,7 +199,7 @@ const AuditorDashboard = () => {
           <StatCard icon={CheckCircle} value={loading?"...":String(active)} label="Active Beneficiaries"  color="success" delay={0.1} />
           <StatCard icon={Shield}      value="100%"                          label="Endorsement Rate"      color="warning" delay={0.2} />
           <StatCard icon={FileText}    value={loading?"...":String(phh)}    label="PHH Records"           color="secondary" delay={0.3} />
-          <StatCard icon={Leaf}        value={loading?"...":`${totalCO2}kg`} label="CO₂ Saved"            color="success" delay={0.4} />
+          <StatCard icon={Leaf}        value={`${carbonReductionPct}%`} label="CO₂ Reduction"        color="success" delay={0.4} />
         </div>
 
         {/* Tabs */}
@@ -635,8 +634,8 @@ const AuditorDashboard = () => {
                   },
                   {
                     name: "Carbon and Sustainability Audit Report",
-                    desc: `${totalCO2} kg CO₂ saved monthly through digital transformation of PDS`,
-                    detail: `Paper saved: ${paperSaved} pages (${co2Paper} kg CO₂) · Trips saved: ${tripsSaved} (${co2Trips} kg CO₂) · Trees equivalent: ${trees}`,
+                    desc: `${carbonReductionPct}% carbon footprint reduction vs. conventional PDS (IPCC-compliant methodology)`,
+                    detail: `Conventional: ${conventionalMonthlyT} tCO₂e/month · SMART PDS (renewable): ${smartMonthlyT} tCO₂e/month · Annual saving: 3,913.10 tCO₂e`,
                     type: "Sustainability",
                     color: "success",
                     icon: "🌱"

@@ -16,18 +16,20 @@ const BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001';
 const API_KEY  = import.meta.env.VITE_API_KEY  || 'pds-secret-key-2024';
 
 const ALL_DCS = [
-  "DC-RAN-01","DC-RAN-02","DC-RAN-03","DC-RAN-04","DC-RAN-05",
-  "DC-RAN-06","DC-RAN-07","DC-RAN-08","DC-RAN-09","DC-RAN-10",
-  "DC-RAN-11","DC-RAN-12","DC-RAN-13","DC-RAN-14","DC-RAN-15",
-  "DC-RAN-16","DC-RAN-17","DC-RAN-18"
+  "KHE-A","KHE-B","CHA-A","CHA-B","MAN-A","MAN-B","BUR-A","BUR-B",
+  "LAP-A","LAP-B","BER-A","BER-B","ITK-A","ITK-B",
+  "KAN-A","KAN-B","KAN-C","KAN-D","KAN-E","KAN-F",
+  "RAT-A","RAT-B","NAG-A","NAG-B","NMK-A","NMK-B","ANG-A","ANG-B",
+  "ORM-A","ORM-B","RAH-A","RAH-B","SIL-A","SIL-B","SON-A","SON-B",
+  "BUN-A","BUN-B","TAM-A","TAM-B",
 ];
 
 const PSC_CONFIG = [
-  { id: "PSC-RAN-01", name: "Khelari P&SC", zone: "North-West", color: "#7C3AED", dcs: ["DC-RAN-01","DC-RAN-02","DC-RAN-03","DC-RAN-04"], blocks: ["Khelari","Burmu","Chanho","Mandar"] },
+  { id: "PSC-RAN-01", name: "Chanho P&SC", zone: "North-West", color: "#7C3AED", dcs: ["DC-RAN-01","DC-RAN-02","DC-RAN-03","DC-RAN-04"], blocks: ["Khelari","Burmu","Chanho","Mandar"] },
   { id: "PSC-RAN-02", name: "Bero P&SC",    zone: "South-West", color: "#2563EB", dcs: ["DC-RAN-05","DC-RAN-06","DC-RAN-07"],             blocks: ["Bero","Lapung","Itki"] },
   { id: "PSC-RAN-03", name: "Kanke P&SC",   zone: "Central",    color: "#059669", dcs: ["DC-RAN-08","DC-RAN-09","DC-RAN-10"],             blocks: ["Kanke","Ratu","Nagri"] },
-  { id: "PSC-RAN-04", name: "Namkum P&SC",  zone: "East-Central",color: "#D97706", dcs: ["DC-RAN-11","DC-RAN-12","DC-RAN-13","DC-RAN-14"], blocks: ["Namkum","Angara","Rahe","Ormanjhi"] },
-  { id: "PSC-RAN-05", name: "Silli P&SC",   zone: "Far East",   color: "#DC2626", dcs: ["DC-RAN-15","DC-RAN-16","DC-RAN-17","DC-RAN-18"], blocks: ["Silli","Bundu","Sonahatu","Tamar"] },
+  { id: "PSC-RAN-04", name: "Angara P&SC",  zone: "East-Central",color: "#D97706", dcs: ["DC-RAN-11","DC-RAN-12","DC-RAN-13","DC-RAN-14"], blocks: ["Namkum","Angara","Rahe","Ormanjhi"] },
+  { id: "PSC-RAN-05", name: "Sonahatu P&SC",   zone: "Far East",   color: "#DC2626", dcs: ["DC-RAN-15","DC-RAN-16","DC-RAN-17","DC-RAN-18"], blocks: ["Silli","Bundu","Sonahatu","Tamar"] },
 ];
 
 const CHART_GRID = "hsl(214,32%,91%)";
@@ -73,9 +75,9 @@ const QRCard = ({ beneficiary: b, qrData }: { beneficiary: any, qrData: string }
         <div className="flex flex-col items-center gap-2">
           <QRCodeSVG
             value={qrData}
-            size={120}
-            level="H"
-            includeMargin={true}
+            size={180}
+            level="M"
+            marginSize={4}
             bgColor="#ffffff"
             fgColor="#1a1a2e"
           />
@@ -95,6 +97,22 @@ const QRCard = ({ beneficiary: b, qrData }: { beneficiary: any, qrData: string }
         <div className="flex justify-between">
           <span className="text-muted-foreground">Block</span>
           <span className="font-bold">{b.block}</span>
+        </div>
+        <div className="flex justify-between">
+          <span className="text-muted-foreground">Category</span>
+          <span className="font-bold">{b.category}</span>
+        </div>
+        <div className="flex justify-between">
+          <span className="text-muted-foreground">P&SC</span>
+          <span className="font-bold">{b.pscID}</span>
+        </div>
+        <div className="flex justify-between">
+          <span className="text-muted-foreground">DC</span>
+          <span className="font-bold">{b.dcID}</span>
+        </div>
+        <div className="flex justify-between">
+          <span className="text-muted-foreground">QR Generated</span>
+          <span className="font-bold text-[10px]">{new Date().toLocaleString('en-IN')}</span>
         </div>
         <div className="flex justify-between">
           <span className="text-muted-foreground">Entitlement</span>
@@ -130,71 +148,68 @@ const AdminDashboard = () => {
 
   const loadAllData = async () => {
     setLoading(true);
-    const all: any[] = [];
-    for (const dc of ALL_DCS) {
-      try {
-        const data = await apiFetch(`/api/beneficiaries?dcId=${dc}`);
-        const list = Array.isArray(data) ? data : [data];
-        all.push(...list);
-      } catch { }
-    }
-    const unique = Array.from(new Map(all.map(b => [b.beneficiaryID, b])).values());
-    setAllBeneficiaries(unique);
-
-    // PSC stats
-    const pscMap: Record<string, any> = {};
-    PSC_CONFIG.forEach(p => { pscMap[p.id] = { ...p, count: 0, phh: 0, aay: 0, rice: 0, wheat: 0 }; });
-    unique.forEach(b => {
-      if (pscMap[b.pscID]) {
-        pscMap[b.pscID].count++;
-        if (b.category === 'PHH') pscMap[b.pscID].phh++;
-        else pscMap[b.pscID].aay++;
-        pscMap[b.pscID].rice  += b.riceQty  || 0;
-        pscMap[b.pscID].wheat += b.wheatQty || 0;
+    try {
+      const all: any[] = [];
+      for (const dc of ALL_DCS) {
+        try {
+          const data = await apiFetch(`/api/beneficiaries?dcId=${dc}`);
+          const list = Array.isArray(data) ? data : (data ? [data] : []);
+          all.push(...list);
+        } catch { }
       }
-    });
-    setPscStats(Object.values(pscMap));
+      const unique = Array.from(new Map(all.map(b => [b.beneficiaryID, b])).values());
+      setAllBeneficiaries(unique);
 
-    // Category stats
-    const phh = unique.filter(b => b.category === 'PHH').length;
-    const aay = unique.filter(b => b.category === 'AAY').length;
-    setCategoryStats([
-      { name: 'PHH', value: phh, color: '#2563EB' },
-      { name: 'AAY', value: aay, color: '#D97706' },
-    ]);
+      // PSC stats
+      const pscMap: Record<string, any> = {};
+      PSC_CONFIG.forEach(p => { pscMap[p.id] = { ...p, count: 0, phh: 0, aay: 0, rice: 0, wheat: 0 }; });
+      unique.forEach(b => {
+        if (pscMap[b.pscID]) {
+          pscMap[b.pscID].count++;
+          if (b.category === 'PHH') pscMap[b.pscID].phh++;
+          else pscMap[b.pscID].aay++;
+          pscMap[b.pscID].rice  += b.riceQty  || 0;
+          pscMap[b.pscID].wheat += b.wheatQty || 0;
+        }
+      });
+      setPscStats(Object.values(pscMap));
 
-    // Block stats
-    const blockMap: Record<string, { rice: number, wheat: number, count: number }> = {};
-    unique.forEach(b => {
-      if (!blockMap[b.block]) blockMap[b.block] = { rice: 0, wheat: 0, count: 0 };
-      blockMap[b.block].rice  += b.riceQty  || 0;
-      blockMap[b.block].wheat += b.wheatQty || 0;
-      blockMap[b.block].count++;
-    });
-    setBlockStats(Object.entries(blockMap).map(([block, v]) => ({ block, ...v })));
+      // Category stats
+      const phh = unique.filter(b => b.category === 'PHH').length;
+      const aay = unique.filter(b => b.category === 'AAY').length;
+      setCategoryStats([
+        { name: 'PHH', value: phh, color: '#2563EB' },
+        { name: 'AAY', value: aay, color: '#D97706' },
+      ]);
 
-    // Entitlement totals per PSC
-    setEntitlementStats(Object.values(pscMap).map((p: any) => ({
-      name: p.name.replace(' P&SC','').replace(' (North-West Zone)','').replace(' (South-West Zone)','').replace(' (Central High-Demand Zone)','').replace(' (East-Central Zone)','').replace(' (Far East Zone)',''),
-      rice: Math.round(p.rice),
-      wheat: Math.round(p.wheat),
-      beneficiaries: p.count,
-    })));
+      // Block stats
+      const blockMap: Record<string, { rice: number, wheat: number, count: number }> = {};
+      unique.forEach(b => {
+        if (!blockMap[b.block]) blockMap[b.block] = { rice: 0, wheat: 0, count: 0 };
+        blockMap[b.block].rice  += b.riceQty  || 0;
+        blockMap[b.block].wheat += b.wheatQty || 0;
+        blockMap[b.block].count++;
+      });
+      setBlockStats(Object.entries(blockMap).map(([block, v]) => ({ block, ...v })));
 
-    setLoading(false);
+      // Entitlement totals per PSC
+      setEntitlementStats(Object.values(pscMap).map((p: any) => ({
+        name: p.name.replace(' P&SC','').replace(' (North-West Zone)','').replace(' (South-West Zone)','').replace(' (Central High-Demand Zone)','').replace(' (East-Central Zone)','').replace(' (Far East Zone)',''),
+        rice: Math.round(p.rice),
+        wheat: Math.round(p.wheat),
+        beneficiaries: p.count,
+      })));
+    } finally {
+      setLoading(false);
+    }
   };
-
   const totalRice  = allBeneficiaries.reduce((s, b) => s + (b.riceQty  || 0), 0);
   const totalWheat = allBeneficiaries.reduce((s, b) => s + (b.wheatQty || 0), 0);
   const activeCount = allBeneficiaries.filter(b => b.status === 'ACTIVE').length;
 
-  // Carbon savings calculation
-  const paperSaved     = allBeneficiaries.length * 12 * 3; // 3 pages per beneficiary per month
-  const co2Paper       = (paperSaved * 0.005).toFixed(1);
-  const tripsSaved     = allBeneficiaries.length * 2;
-  const co2Trips       = (tripsSaved * 2.3).toFixed(1);
-  const totalCO2       = (parseFloat(co2Paper) + parseFloat(co2Trips)).toFixed(1);
-  const treesEquivalent = Math.round(parseFloat(totalCO2) / 21.7);
+  // Carbon savings — real Chapter 6 figures (IPCC-compliant methodology, static)
+  const totalCO2 = "326090"; // 359.84 - 33.75 = 326.09 tCO2e/month = 326,090 kg
+  const carbonReductionPct = 90.62;
 
   const tabs = [
     { key: "overview",   label: "Command Summary" },
@@ -249,9 +264,9 @@ const AdminDashboard = () => {
                 <p className="text-[10px] text-muted-foreground">Ranchi District</p>
               </div>
               <div className="rounded-xl bg-card border border-border p-4 stat-card text-center">
-                <p className="font-display text-2xl font-black text-secondary">18</p>
+                <p className="font-display text-2xl font-black text-secondary">40</p>
                 <p className="text-[10px] font-bold text-muted-foreground mt-1">Dispatch Centers</p>
-                <p className="text-[10px] text-muted-foreground">All 18 Blocks</p>
+                <p className="text-[10px] text-muted-foreground">18 Blocks</p>
               </div>
               <div className="rounded-xl bg-card border border-border p-4 stat-card text-center">
                 <p className="font-display text-2xl font-black text-success">{loading ? "..." : allBeneficiaries.filter(b=>b.category==='PHH').length}</p>
@@ -305,18 +320,18 @@ const AdminDashboard = () => {
                 </h3>
                 <div className="space-y-2">
                   {[
-                    { label: "Paper eliminated", value: `${paperSaved} pages`, saving: `${co2Paper} kg CO₂` },
-                    { label: "Physical trips saved", value: `${tripsSaved} trips`, saving: `${co2Trips} kg CO₂` },
+                    { label: "Conventional PDS", value: "359.84 t/month" },
+                    { label: "SMART PDS (renewable)", value: "33.75 t/month" },
                   ].map((item) => (
                     <div key={item.label} className="flex justify-between text-xs border-b border-border pb-1.5">
-                      <span className="text-muted-foreground">{item.label}<br/><span className="text-[10px]">{item.value}</span></span>
-                      <strong className="text-success">{item.saving}</strong>
+                      <span className="text-muted-foreground">{item.label}</span>
+                      <strong className="text-foreground">{item.value}</strong>
                     </div>
                   ))}
                   <div className="mt-3 p-3 rounded-lg bg-success/10 text-center">
-                    <p className="font-display text-2xl font-black text-success">{totalCO2} kg</p>
-                    <p className="text-[10px] text-muted-foreground">Total CO₂ saved monthly</p>
-                    <p className="text-[10px] font-bold text-success mt-1">≈ {treesEquivalent} trees planted 🌳</p>
+                    <p className="font-display text-2xl font-black text-success">90.62%</p>
+                    <p className="text-[10px] text-muted-foreground">Carbon footprint reduction</p>
+                    <p className="text-[10px] font-bold text-success mt-1">≈ 3,913.10 tCO₂e saved annually</p>
                   </div>
                 </div>
               </div>
@@ -414,10 +429,10 @@ const AdminDashboard = () => {
                 <ResponsiveContainer width="100%" height={280}>
                   <BarChart data={blockStats} margin={{ top: 5, right: 20, left: 0, bottom: 60 }}>
                     <CartesianGrid strokeDasharray="3 3" stroke={CHART_GRID} />
-                    <XAxis dataKey="block" tick={{ fontSize: 9 }} stroke={CHART_TICK} angle={-45} textAnchor="end" interval={0} />
+                    <XAxis dataKey="block" tick={{ fontSize: 11 }} stroke={CHART_TICK} angle={-45} textAnchor="end" interval={0} />
                     <YAxis tick={{ fontSize: 10 }} stroke={CHART_TICK} />
                     <Tooltip />
-                    <Bar dataKey="count" fill="#2563EB" radius={[4,4,0,0]} name="Beneficiaries" />
+                    <Bar dataKey="count" fill="#099046" radius={[4,4,0,0]} name="Beneficiaries" />
                   </BarChart>
                 </ResponsiveContainer>
               )}
@@ -433,8 +448,8 @@ const AdminDashboard = () => {
                     <YAxis tick={{ fontSize: 10 }} stroke={CHART_TICK} />
                     <Tooltip />
                     <Legend />
-                    <Bar dataKey="rice"  fill="#059669" radius={[4,4,0,0]} name="Rice (kg)" />
-                    <Bar dataKey="wheat" fill="#D97706" radius={[4,4,0,0]} name="Wheat (kg)" />
+                    <Bar dataKey="rice"  fill="#be0ec4" radius={[4,4,0,0]} name="Rice (kg)" />
+                    <Bar dataKey="wheat" fill="#26a2ea" radius={[4,4,0,0]} name="Wheat (kg)" />
                   </BarChart>
                 </ResponsiveContainer>
               )}
@@ -598,14 +613,23 @@ const AdminDashboard = () => {
             beneficiaryID:    b.beneficiaryID,
             name:             b.name,
             rationCard:       b.rationCardNumber,
-            block:            b.block,
-            dcID:             b.dcID,
-            pscID:            b.pscID,
             category:         b.category,
-            riceQty:          b.riceQty,
-            wheatQty:         b.wheatQty,
+            familyCount:      b.familyCount,
+            block:            b.block,
+            villageWard:      b.villageWard,
+            district:         b.district,
+            pscID:            b.pscID,
+            pscName:          b.pscName,
+            dcID:             b.dcID,
+            dcName:           b.dcName,
+            entitlement: {
+              rice:  b.riceQty,
+              wheat: b.wheatQty,
+              total: b.totalEntitlement,
+            },
             maskedAadhaar:    b.maskedAadhaar,
             status:           b.status,
+            qrGeneratedAt:    new Date().toISOString(),
             verifyURL:        `SMARTPDS:VERIFY:${b.beneficiaryID}`,
           });
           return (

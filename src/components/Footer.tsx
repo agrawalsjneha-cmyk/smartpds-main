@@ -28,7 +28,6 @@ const Footer = () => (
           <h4 className="font-display font-bold mb-3 text-sm">Quick Links</h4>
           <ul className="space-y-2 text-sm text-primary-foreground/60">
             <li><a href="/about" className="hover:text-accent transition-colors">About SMART PDS</a></li>
-            <li><a href="/dashboard" className="hover:text-accent transition-colors">Operational Dashboard</a></li>
             <li><a href="/grievance" className="hover:text-accent transition-colors">File Grievance</a></li>
             <li><a href="/login" className="hover:text-accent transition-colors">Login Portal</a></li>
           </ul>

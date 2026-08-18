@@ -16,7 +16,6 @@ const problems = [
   "Manual record-keeping prone to errors and manipulation",
   "Weak enforcement mechanisms for accountability",
   "Delayed delivery impacting food security of vulnerable populations",
-  "No demand-driven allocation — quota-based wastage",
   "Ghost beneficiaries and duplicate ration cards",
 ];
 
@@ -58,15 +57,16 @@ const About = () => (
       <motion.div initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true }} className="text-center mb-10">
         <h2 className="font-display text-2xl font-black text-foreground">Conventional PDS vs SMART PDS</h2>
         <p className="text-muted-foreground mt-3 max-w-x1 mx-auto leading-relaxed">
-          SMART PDS is a proposed blockchain enabled framework aimed at improving the transparency, efficiency and accountability  of the Indian Public Distribution System. In this model, the movement of the food grains, from district warehouses to beneficiaries , is digitally recorded and verified on a blockchain network, ensuring secure and tamper proof transaction records. Each grain packet is assigned a dynamic QR code linked to its blockchain transaction, enabling end-to-end traceability throughout the supply chain. The platform also includes digital monitoring dashboard that allows administrators to track grain allocation, stock levels, dispatch status, and delievry confirmations in real time.
+          Conventional PDS moves grain through FPS-mediated, paper-based logistics, leakage, ghost beneficiaries,
+          and no real-time visibility. SMART PDS replaces it with a Hyperledger Fabric-based, demand-driven chain:
+          beneficiaries order, blockchain records every custody transfer, and dynamic QR + OTP confirm doorstep
+          delivery.
         </p>
         <motion.img
           src={comparisonCities}
           alt="Comparison: Conventional vs SMART PDS"
-          loading="lazy"
-          width={500}
-          height={250}
-          className="mx-auto mt-5 w-full max-w-md h-auto rounded-xl"
+          loading="lazy"           
+          className="w-full max-w-7xl mx-auto rounded-xl shadow-lg mt-8 mb-6"
           initial={{ opacity: 0, y: 15 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
@@ -170,8 +170,8 @@ const About = () => (
           <p className="text-sm text-muted-foreground leading-relaxed">
             SMART PDS aims to build a <strong className="text-foreground">demand-driven, traceable, and tamper-proof</strong> food
             distribution architecture for Ranchi district. By leveraging Hyperledger Fabric's permissioned blockchain,
-            dynamic watermarked QR codes, IPFS document storage, and real-time analytics, the system ensures complete transparency
-            from central warehouses to the 35 lakh+ beneficiaries across 18 blocks.
+            dynamic QR codes, IPFS document storage, and real-time analytics, the system ensures complete transparency
+            from district warehouses to the beneficiaries across 18 blocks.
           </p>
         </div>
       </div>

@@ -5,7 +5,6 @@ import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import Index from "./pages/Index";
 import About from "./pages/About";
-import Dashboard from "./pages/Dashboard";
 import Login from "./pages/Login";
 import AdminDashboard from "./pages/AdminDashboard";
 import OperatorDashboard from "./pages/OperatorDashboard";
@@ -26,12 +25,11 @@ const App = () => (
         <Routes>
           <Route path="/" element={<Index />} />
           <Route path="/about" element={<About />} />
-          <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/login" element={<Login />} />
           <Route path="/admin" element={<AdminDashboard />} />
           <Route path="/operator" element={<OperatorDashboard />} />
           <Route path="/auditor" element={<AuditorDashboard />} />
-          <Route path="/beneficiary" element={<BeneficiaryDashboard />} />
+          <Route path="/beneficiary/:id?" element={<BeneficiaryDashboard />} />
           <Route path="/grievance" element={<Grievance />} />
           <Route path="*" element={<NotFound />} />
           <Route path="/beneficiaries" element={<BeneficiaryList />} />

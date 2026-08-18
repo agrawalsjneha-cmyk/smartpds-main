@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import { Users, Search, Eye } from "lucide-react";
 import Layout from "@/components/Layout";
@@ -8,19 +9,46 @@ const BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001';
 const API_KEY  = import.meta.env.VITE_API_KEY  || 'pds-secret-key-2024';
 
 const ALL_DCS = [
-  "DC-RAN-01","DC-RAN-02","DC-RAN-03","DC-RAN-04","DC-RAN-05",
-  "DC-RAN-06","DC-RAN-07","DC-RAN-08","DC-RAN-09","DC-RAN-10",
-  "DC-RAN-11","DC-RAN-12","DC-RAN-13","DC-RAN-14","DC-RAN-15",
-  "DC-RAN-16","DC-RAN-17","DC-RAN-18"
+  "KHE-A","KHE-B",
+  "BUR-A","BUR-B",
+  "CHA-A","CHA-B",
+  "MAN-A","MAN-B",
+  "BER-A","BER-B",
+  "LAP-A","LAP-B",
+  "ITK-A","ITK-B",
+  "KAN-A","KAN-B","KAN-C","KAN-D","KAN-E","KAN-F",
+  "RAT-A","RAT-B",
+  "NAG-A","NAG-B",
+  "NMK-A","NMK-B",
+  "ANG-A","ANG-B",
+  "RAH-A","RAH-B",
+  "ORM-A","ORM-B",
+  "SIL-A","SIL-B",
+  "BUN-A","BUN-B",
+  "SON-A","SON-B",
+  "TAM-A","TAM-B"
 ];
-
 const DC_NAMES: Record<string, string> = {
-  "DC-RAN-01": "Khelari DC", "DC-RAN-02": "Burmu DC", "DC-RAN-03": "Chanho DC",
-  "DC-RAN-04": "Mandar DC",  "DC-RAN-05": "Bero DC",  "DC-RAN-06": "Lapung DC",
-  "DC-RAN-07": "Itki DC",    "DC-RAN-08": "Kanke DC", "DC-RAN-09": "Ratu DC",
-  "DC-RAN-10": "Nagri DC",   "DC-RAN-11": "Namkum DC","DC-RAN-12": "Angara DC",
-  "DC-RAN-13": "Rahe DC",    "DC-RAN-14": "Ormanjhi DC","DC-RAN-15": "Silli DC",
-  "DC-RAN-16": "Bundu DC",   "DC-RAN-17": "Sonahatu DC","DC-RAN-18": "Tamar DC",
+  "KHE-A": "Khelari DC-A",   "KHE-B": "Khelari DC-B",
+  "BUR-A": "Burmu DC-A",     "BUR-B": "Burmu DC-B",
+  "CHA-A": "Chanho DC-A",    "CHA-B": "Chanho DC-B",
+  "MAN-A": "Mandar DC-A",    "MAN-B": "Mandar DC-B",
+  "BER-A": "Bero DC-A",      "BER-B": "Bero DC-B",
+  "LAP-A": "Lapung DC-A",    "LAP-B": "Lapung DC-B",
+  "ITK-A": "Itki DC-A",      "ITK-B": "Itki DC-B",
+  "KAN-A": "Kanke DC-A",     "KAN-B": "Kanke DC-B",
+  "KAN-C": "Kanke DC-C",     "KAN-D": "Kanke DC-D",
+  "KAN-E": "Kanke DC-E",     "KAN-F": "Kanke DC-F",
+  "RAT-A": "Ratu DC-A",      "RAT-B": "Ratu DC-B",
+  "NAG-A": "Nagri DC-A",     "NAG-B": "Nagri DC-B",
+  "NMK-A": "Namkum DC-A",    "NMK-B": "Namkum DC-B",
+  "ANG-A": "Angara DC-A",    "ANG-B": "Angara DC-B",
+  "RAH-A": "Rahe DC-A",      "RAH-B": "Rahe DC-B",
+  "ORM-A": "Ormanjhi DC-A",  "ORM-B": "Ormanjhi DC-B",
+  "SIL-A": "Silli DC-A",     "SIL-B": "Silli DC-B",
+  "BUN-A": "Bundu DC-A",     "BUN-B": "Bundu DC-B",
+  "SON-A": "Sonahatu DC-A",  "SON-B": "Sonahatu DC-B",
+  "TAM-A": "Tamar DC-A",     "TAM-B": "Tamar DC-B",
 };
 
 async function apiFetch(path: string) {
@@ -64,10 +92,13 @@ const BeneficiaryTable = ({ data, selected, onSelect }: { data: any[], selected:
               <td className="px-3 py-2.5">
                 <span className={`rounded-md px-1.5 py-0.5 text-[10px] font-bold ${b.status === 'ACTIVE' ? 'bg-success/10 text-success' : 'bg-destructive/10 text-destructive'}`}>{b.status}</span>
               </td>
-              <td className="px-3 py-2.5">
+              <td className="px-3 py-2.5 flex gap-1">
                 <button onClick={() => onSelect(b)} className="rounded-md bg-muted px-2 py-1 text-[10px] font-bold hover:bg-primary/10 hover:text-primary transition-colors">
                   <Eye className="h-3 w-3" />
                 </button>
+                <Link to={`/beneficiary/${b.beneficiaryID}`} className="rounded-md bg-primary/10 text-primary px-2 py-1 text-[10px] font-bold hover:bg-primary/20 transition-colors">
+                  Full Profile
+                </Link>
               </td>
             </tr>
           ))
@@ -141,7 +172,7 @@ const BeneficiaryList = () => {
   const [allLoaded, setAllLoaded] = useState(false);
 
   // ── DC tab state ─────────────────────────────────────────
-  const [dcId, setDcId] = useState("DC-RAN-01");
+  const [dcId, setDcId] = useState("KHE-A");
   const [dcBeneficiaries, setDcBeneficiaries] = useState<any[]>([]);
   const [dcFiltered, setDcFiltered] = useState<any[]>([]);
   const [dcSearch, setDcSearch] = useState("");
@@ -233,7 +264,7 @@ const BeneficiaryList = () => {
             onClick={() => setTab("all")}
             className={`px-4 py-1.5 rounded-lg text-xs font-bold transition-all ${tab === "all" ? "bg-primary text-primary-foreground shadow-sm" : "bg-muted text-muted-foreground"}`}
           >
-            All Beneficiaries (111)
+            All Beneficiaries (1,111)
           </button>
           <button
             onClick={() => setTab("dc")}
@@ -269,15 +300,15 @@ const BeneficiaryList = () => {
                 <div className="h-2 w-full bg-muted rounded-full overflow-hidden">
                   <div className="h-full bg-primary rounded-full transition-all duration-300" style={{ width: `${allProgress}%` }} />
                 </div>
-                <p className="text-xs text-muted-foreground mt-1 text-center">Loading from all 18 DCs... {allProgress}%</p>
+                <p className="text-xs text-muted-foreground mt-1 text-center">Loading from all 40 DCs... {allProgress}%</p>
               </div>
             )}
 
             {!allLoading && !allLoaded && (
               <div className="rounded-xl bg-card border border-border p-12 text-center">
                 <Users className="h-12 w-12 text-muted-foreground/30 mx-auto mb-3" />
-                <p className="text-sm font-bold text-foreground">Click "Load All Beneficiaries" to fetch all 111 records from blockchain</p>
-                <p className="text-xs text-muted-foreground mt-1">This will query all 18 DCs across 5 P&SCs in Ranchi district</p>
+                <p className="text-sm font-bold text-foreground">Click "Load All Beneficiaries" to fetch all 1,111 records from blockchain</p>
+                <p className="text-xs text-muted-foreground mt-1">This will query all 40 DCs across 5 P&SCs in Ranchi district</p>
               </div>
             )}
 

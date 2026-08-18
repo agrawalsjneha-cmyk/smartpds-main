@@ -24,11 +24,11 @@ const ALL_DCS = [
 ];
 
 const PSC_CONFIG = [
-  { id:"PSC-RAN-01", name:"Khelari P&SC",  zone:"North-West",  color:"#7C3AED", dcs:["DC-RAN-01","DC-RAN-02","DC-RAN-03","DC-RAN-04"], blocks:["Khelari","Burmu","Chanho","Mandar"] },
-  { id:"PSC-RAN-02", name:"Bero P&SC",     zone:"South-West",  color:"#2563EB", dcs:["DC-RAN-05","DC-RAN-06","DC-RAN-07"],             blocks:["Bero","Lapung","Itki"] },
-  { id:"PSC-RAN-03", name:"Kanke P&SC",    zone:"Central",     color:"#059669", dcs:["DC-RAN-08","DC-RAN-09","DC-RAN-10"],             blocks:["Kanke","Ratu","Nagri"] },
-  { id:"PSC-RAN-04", name:"Namkum P&SC",   zone:"East-Central",color:"#D97706", dcs:["DC-RAN-11","DC-RAN-12","DC-RAN-13","DC-RAN-14"], blocks:["Namkum","Angara","Rahe","Ormanjhi"] },
-  { id:"PSC-RAN-05", name:"Silli P&SC",    zone:"Far East",    color:"#DC2626", dcs:["DC-RAN-15","DC-RAN-16","DC-RAN-17","DC-RAN-18"], blocks:["Silli","Bundu","Sonahatu","Tamar"] },
+  { id:"PSC-RAN-01", name:"Chanho P&SC",  zone:"North-West",  color:"#8e15e6", dcs:["DC-RAN-01","DC-RAN-02","DC-RAN-03","DC-RAN-04"], blocks:["Khelari","Burmu","Chanho","Mandar"] },
+  { id:"PSC-RAN-02", name:"Bero P&SC",     zone:"South-West",  color:"#1581e7", dcs:["DC-RAN-05","DC-RAN-06","DC-RAN-07"],             blocks:["Bero","Lapung","Itki"] },
+  { id:"PSC-RAN-03", name:"Kanke P&SC",    zone:"Central",     color:"#05620e", dcs:["DC-RAN-08","DC-RAN-09","DC-RAN-10"],             blocks:["Kanke","Ratu","Nagri"] },
+  { id:"PSC-RAN-04", name:"Angara P&SC",   zone:"East-Central",color:"#eb8c1f", dcs:["DC-RAN-11","DC-RAN-12","DC-RAN-13","DC-RAN-14"], blocks:["Namkum","Angara","Rahe","Ormanjhi"] },
+  { id:"PSC-RAN-05", name:"Sonahatu P&SC",    zone:"Far East",    color:"#d816a7", dcs:["DC-RAN-15","DC-RAN-16","DC-RAN-17","DC-RAN-18"], blocks:["Silli","Bundu","Sonahatu","Tamar"] },
 ];
 
 const DC_NAMES: Record<string,string> = {
@@ -41,8 +41,8 @@ const DC_NAMES: Record<string,string> = {
 };
 
 const PSC_NAMES: Record<string,string> = {
-  "PSC-RAN-01":"Khelari P&SC","PSC-RAN-02":"Bero P&SC",
-  "PSC-RAN-03":"Kanke P&SC",  "PSC-RAN-04":"Namkum P&SC","PSC-RAN-05":"Silli P&SC",
+  "PSC-RAN-01":"Chanho P&SC","PSC-RAN-02":"Bero P&SC",
+  "PSC-RAN-03":"Kanke P&SC",  "PSC-RAN-04":"Angara P&SC","PSC-RAN-05":"Sonahatu P&SC",
 };
 
 const statusColor: Record<string,string> = {
@@ -57,14 +57,14 @@ const CHART_GRID = "hsl(214,32%,91%)";
 const CHART_TICK = "hsl(215,16%,47%)";
 
 const vehicleData = [
-  { id:"VH-001", driver:"Ramesh Kumar",  mobile:"98XXXX1234", from:"Godown-1 (FCI)", to:"Khelari P&SC", status:"In Transit", progress:65,  eta:"25 min", load:"42 MT", capacity:"50 MT", seal:"SL-4521", gps:"Active",   routeId:"RT-NW-01", lastUpdated:"09:15 AM", delayReason:"" },
-  { id:"VH-002", driver:"Suresh Yadav",  mobile:"97XXXX5678", from:"Khelari P&SC",   to:"Kanke DC",     status:"Delivered",  progress:100, eta:"Done",   load:"28 MT", capacity:"35 MT", seal:"SL-4520", gps:"Active",   routeId:"RT-C-02",  lastUpdated:"08:52 AM", delayReason:"" },
+  { id:"VH-001", driver:"Ramesh Kumar",  mobile:"98XXXX1234", from:"Godown-1 (FCI)", to:"Chanho P&SC", status:"In Transit", progress:65,  eta:"25 min", load:"42 MT", capacity:"50 MT", seal:"SL-4521", gps:"Active",   routeId:"RT-NW-01", lastUpdated:"09:15 AM", delayReason:"" },
+  { id:"VH-002", driver:"Suresh Yadav",  mobile:"97XXXX5678", from:"Chanho P&SC",   to:"Kanke DC",     status:"Delivered",  progress:100, eta:"Done",   load:"28 MT", capacity:"35 MT", seal:"SL-4520", gps:"Active",   routeId:"RT-C-02",  lastUpdated:"08:52 AM", delayReason:"" },
   { id:"VH-003", driver:"Mohan Singh",   mobile:"96XXXX9012", from:"Godown-2 (SWC)", to:"Namkum DC",    status:"Delayed",    progress:30,  eta:"1.5 hr", load:"35 MT", capacity:"45 MT", seal:"SL-4519", gps:"Active",   routeId:"RT-EC-03", lastUpdated:"08:10 AM", delayReason:"Road blockage at NH-23" },
   { id:"VH-004", driver:"Ajay Prasad",   mobile:"95XXXX3456", from:"Bero P&SC",      to:"Silli DC",     status:"Loading",    progress:0,   eta:"45 min", load:"50 MT", capacity:"55 MT", seal:"SL-4518", gps:"Inactive", routeId:"RT-FE-04", lastUpdated:"07:30 AM", delayReason:"" },
 ];
 
 const dispatchLog = [
-  { id:"DSP-4521", dest:"Khelari P&SC", qty:"42 MT", time:"09:15 AM", status:"Dispatched", vehicle:"JH-01-AB-1234", driver:"Raj Kumar",   seal:"SL-4521" },
+  { id:"DSP-4521", dest:"Chanho P&SC", qty:"42 MT", time:"09:15 AM", status:"Dispatched", vehicle:"JH-01-AB-1234", driver:"Raj Kumar",   seal:"SL-4521" },
   { id:"DSP-4520", dest:"Kanke DC",     qty:"28 MT", time:"08:45 AM", status:"In Transit",  vehicle:"JH-01-CD-5678", driver:"Sunil Oraon", seal:"SL-4520" },
   { id:"DSP-4519", dest:"Namkum DC",    qty:"35 MT", time:"08:10 AM", status:"Delivered",   vehicle:"JH-01-EF-9012", driver:"Mohan Das",   seal:"SL-4519" },
   { id:"DSP-4518", dest:"Silli DC",     qty:"50 MT", time:"07:30 AM", status:"Delivered",   vehicle:"JH-01-GH-3456", driver:"Vikram Singh",seal:"SL-4518" },
@@ -73,7 +73,7 @@ const dispatchLog = [
 const inventoryLedger = [
   { location:"Godown-1 (FCI)", type:"FCI",  stockIn:450, stockOut:380, balance:70,  lat:"23.3441°N", lng:"85.3096°E" },
   { location:"Godown-2 (SWC)", type:"SWC",  stockIn:320, stockOut:290, balance:30,  lat:"23.3601°N", lng:"85.3300°E" },
-  { location:"Khelari P&SC",   type:"P&SC", stockIn:280, stockOut:265, balance:15,  lat:"23.3500°N", lng:"85.3200°E" },
+  { location:"Chanho P&SC",   type:"P&SC", stockIn:280, stockOut:265, balance:15,  lat:"23.3500°N", lng:"85.3200°E" },
   { location:"Kanke DC",       type:"DC",   stockIn:180, stockOut:175, balance:5,   lat:"23.3700°N", lng:"85.3400°E" },
 ];
 
@@ -217,15 +217,15 @@ const OperatorDashboard = () => {
   }));
 
   const orderStatusData = [
-    { name:'CREATED',   value: createdOrders,                                    color:'#D97706' },
-    { name:'APPROVED',  value: approvedOrders,                                   color:'#2563EB' },
-    { name:'DELIVERED', value: allOrders.filter(o=>o.orderStatus==='DELIVERED').length, color:'#059669' },
-    { name:'CANCELLED', value: allOrders.filter(o=>o.orderStatus==='CANCELLED').length, color:'#DC2626' },
+    { name:'CREATED',   value: createdOrders,                                    color:'#bb44d5' },
+    { name:'APPROVED',  value: approvedOrders,                                   color:'#36c1eb' },
+    { name:'DELIVERED', value: allOrders.filter(o=>o.orderStatus==='DELIVERED').length, color:'#0bc038' },
+    { name:'CANCELLED', value: allOrders.filter(o=>o.orderStatus==='CANCELLED').length, color:'#aa0a3f' },
   ].filter(d => d.value > 0);
 
   const benefCoverageData = [
-    { name:'Orders Placed', value: totalOrders,   color:'#2563EB' },
-    { name:'Yet to Order',  value: noOrderBenefs, color:'#D97706' },
+    { name:'Orders Placed', value: totalOrders,   color:'#bb44d5' },
+    { name:'Yet to Order',  value: noOrderBenefs, color:'#36c1eb' },
   ];
 
   const demandData = [
@@ -338,9 +338,9 @@ const OperatorDashboard = () => {
                     <YAxis tick={{ fontSize:10 }} stroke={CHART_TICK} />
                     <Tooltip />
                     <Legend />
-                    <Line type="monotone" dataKey="rice"  stroke="#059669" strokeWidth={2} name="Rice (kg)"  dot={{ r:4 }} />
-                    <Line type="monotone" dataKey="wheat" stroke="#D97706" strokeWidth={2} name="Wheat (kg)" dot={{ r:4 }} />
-                    <Line type="monotone" dataKey="total" stroke="#2563EB" strokeWidth={2} name="Total (kg)" dot={{ r:4 }} strokeDasharray="5 5" />
+                    <Line type="monotone" dataKey="rice"  stroke="#ee27dd" strokeWidth={2} name="Rice (kg)"  dot={{ r:4 }} />
+                    <Line type="monotone" dataKey="wheat" stroke="#6c0991" strokeWidth={2} name="Wheat (kg)" dot={{ r:4 }} />
+                    <Line type="monotone" dataKey="total" stroke="#0e9f3e" strokeWidth={2} name="Total (kg)" dot={{ r:4 }} strokeDasharray="5 5" />
                   </LineChart>
                 </ResponsiveContainer>
               </div>
@@ -418,8 +418,8 @@ const OperatorDashboard = () => {
                   <YAxis dataKey="item" type="category" tick={{ fontSize:10 }} stroke={CHART_TICK} />
                   <Tooltip />
                   <Legend />
-                  <Bar dataKey="available" fill="#059669" radius={[0,4,4,0]} name="Available" />
-                  <Bar dataKey="required"  fill="#DC2626" radius={[0,4,4,0]} name="Required"  />
+                  <Bar dataKey="available" fill="#ab14e6" radius={[0,4,4,0]} name="Available" />
+                  <Bar dataKey="required"  fill="#11a7e2" radius={[0,4,4,0]} name="Required"  />
                 </BarChart>
               </ResponsiveContainer>
             </div>

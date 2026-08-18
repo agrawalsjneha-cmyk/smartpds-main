@@ -6,7 +6,6 @@ import { Button } from "@/components/ui/button";
 const navLinks = [
   { label: "Home", path: "/" },
   { label: "About SMART PDS", path: "/about" },
-  { label: "Dashboard", path: "/dashboard" },
   { label: "Login", path: "/login" },
   { label: "Grievance", path: "/grievance" },
 ];
